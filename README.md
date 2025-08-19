@@ -1,6 +1,6 @@
 # PowerPoint Remote Control
 
-A mobile-friendly web interface for remote PowerPoint control using your phone as a remote. Control presentations with simple touch gestures and volume buttons.
+A mobile-friendly web interface for remote PowerPoint control using your phone as a remote. Control presentations with simple touch gestures.
 
 ![Usage Example](usage.png)
 
@@ -8,7 +8,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 
 ### 🎯 Core Functionality
 - **Slide Navigation**: Tap left/right sides of screen to advance/previous slides
-- **Volume Control**: Use phone volume buttons to trigger clicks
 - **PowerPoint Integration**: Direct control of PowerPoint application
 - **Fullscreen Mode**: Immersive presentation experience
 
@@ -62,10 +61,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 4. **Tap "Start Slideshow"** to begin the presentation
 5. **Navigate slides** by tapping left/right sides of the screen
 
-### Volume Control
-- **Use phone volume buttons** to trigger mouse clicks
-- **Test volume controls** using your phone's volume buttons
-
 ### Advanced Features
 - **Fullscreen mode**: Tap "Fullscreen" for immersive experience
 - **Network access**: Works across your local network
@@ -93,7 +88,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 ### 🔧 Requirements
 - **PowerPoint**: Microsoft PowerPoint must be installed
 - **Network**: Both devices must be on same network
-- **Permissions**: May require microphone/volume permissions on mobile
 
 ## Troubleshooting
 
@@ -103,10 +97,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 - Ensure PowerPoint is installed and accessible
 - Try the "Focus PowerPoint" button first
 - Check if PowerPoint is in slideshow mode
-
-**Volume controls not working**
-- Grant volume permissions to your browser
-- Try using your phone's volume buttons
 
 **Network connection issues**
 - Ensure both devices are on the same network
