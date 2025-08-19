@@ -24,17 +24,11 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 - **Exit Slideshow**: End presentation (Escape)
 - **Fullscreen Mode**: Toggle web app fullscreen
 
-### 🔧 Debug Features
-- **Comprehensive Logging**: Monitor all events and requests
-- **Volume Testing**: Built-in video player for volume control testing
-- **Event Monitoring**: Track touch, scroll, and device events
-- **Performance Metrics**: Response times and success rates
-
 ## Installation
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- Node.js (v22 or higher)
+- npm
 - PowerPoint (Microsoft Office)
 
 ### Setup
@@ -70,12 +64,10 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 
 ### Volume Control
 - **Use phone volume buttons** to trigger mouse clicks
-- **Test volume controls** using the debug page (`/debug.html`)
-- **Custom volume slider** available for testing
+- **Test volume controls** using your phone's volume buttons
 
 ### Advanced Features
 - **Fullscreen mode**: Tap "Fullscreen" for immersive experience
-- **Debug monitoring**: Visit `/debug.html` for comprehensive logging
 - **Network access**: Works across your local network
 
 ## API Endpoints
@@ -83,7 +75,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Main interface |
-| `/debug.html` | GET | Debug page with monitoring |
 | `/click` | GET | Trigger mouse click |
 | `/click-left` | GET | Press left arrow key |
 | `/click-right` | GET | Press right arrow key |
@@ -115,8 +106,7 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 
 **Volume controls not working**
 - Grant volume permissions to your browser
-- Test with the debug page (`/debug.html`)
-- Try the custom volume controls
+- Try using your phone's volume buttons
 
 **Network connection issues**
 - Ensure both devices are on the same network
@@ -128,13 +118,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 - Try a different browser
 - Check if JavaScript is enabled
 
-### Debug Mode
-Visit `/debug.html` to:
-- Test all endpoints individually
-- Monitor volume change events
-- View comprehensive event logs
-- Test touch and gesture controls
-
 ## Development
 
 ### Project Structure
@@ -142,8 +125,7 @@ Visit `/debug.html` to:
 pptx-control/
 ├── server.mjs          # Express server with endpoints
 ├── public/
-│   ├── index.html      # Main mobile interface
-│   └── debug.html      # Debug and testing interface
+│   └── index.html      # Main mobile interface
 ├── package.json        # Dependencies and scripts
 └── README.md          # This file
 ```
@@ -169,7 +151,6 @@ This project is open source and available under the MIT License.
 
 For issues, questions, or contributions:
 - Create an issue on GitHub
-- Check the debug page for troubleshooting
 - Review the troubleshooting section above
 
 ---
