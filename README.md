@@ -44,7 +44,7 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 
 3. **Start the server**
    ```bash
-   node server.mjs
+   npm start
    ```
 
 4. **Access the interface**
