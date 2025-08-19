@@ -2,7 +2,7 @@
 
 A mobile-friendly web interface for remote PowerPoint control using your phone as a remote. Control presentations with simple touch gestures.
 
-![Usage Example](usage.png)
+<img src="usage.png" alt="Usage Example" width="400" height="auto" style="max-width: 100%; height: auto;">
 
 ## Features
 
@@ -89,25 +89,6 @@ A mobile-friendly web interface for remote PowerPoint control using your phone a
 - **PowerPoint**: Microsoft PowerPoint must be installed
 - **Network**: Both devices must be on same network
 
-## Troubleshooting
-
-### Common Issues
-
-**PowerPoint not responding**
-- Ensure PowerPoint is installed and accessible
-- Try the "Focus PowerPoint" button first
-- Check if PowerPoint is in slideshow mode
-
-**Network connection issues**
-- Ensure both devices are on the same network
-- Check firewall settings
-- Try the localhost URL if network URL fails
-
-**Mobile interface not loading**
-- Clear browser cache
-- Try a different browser
-- Check if JavaScript is enabled
-
 ## Development
 
 ### Project Structure
@@ -141,7 +122,6 @@ This project is open source and available under the MIT License.
 
 For issues, questions, or contributions:
 - Create an issue on GitHub
-- Review the troubleshooting section above
 
 ---
 
