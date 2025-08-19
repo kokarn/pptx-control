@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerPoint Controller - Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-button {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+        }
+
+        .debug-area {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            resize: vertical;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .clear-button {
+            background: rgba(255, 0, 0, 0.3);
+            margin-top: 10px;
+        }
+
+        .clear-button:hover {
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .video-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .video-container {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 3px;
+        }
+
+        .video-info {
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .custom-volume-control {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .volume-slider {
+            width: 200px;
+            height: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+            margin: 0 10px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        .volume-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .volume-btn {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .volume-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PowerPoint Controller - Debug</h1>
+
+        <div class="controls">
+            <button class="control-button" onclick="testEndpoint('/focus-powerpoint')">Focus PowerPoint</button>
+            <button class="control-button" onclick="testEndpoint('/start-slideshow')">Start Slideshow</button>
+            <button class="control-button" onclick="testEndpoint('/exit-slideshow')">Exit Slideshow</button>
+            <button class="control-button" onclick="testEndpoint('/click-left')">Left Arrow</button>
+            <button class="control-button" onclick="testEndpoint('/click-right')">Right Arrow</button>
+            <button class="control-button" onclick="testEndpoint('/click')">Mouse Click</button>
+            <button class="control-button clear-button" onclick="clearLog()">Clear Log</button>
+        </div>
+
+        <textarea id="debugLog" class="debug-area" readonly placeholder="Debug events will appear here..."></textarea>
+
+        <div class="video-section">
+            <h3>Video Test Element</h3>
+            <div class="video-container">
+                <video id="testVideo" controls preload="metadata">
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-info">
+                    <p>Use the volume controls on this video to test volume change events</p>
+                    <p>Current volume: <span id="currentVolume">1.0</span></p>
+                </div>
+
+                <div class="custom-volume-control">
+                    <h4>Custom Volume Control (Mobile Friendly)</h4>
+                    <div>
+                        <label for="volumeSlider">Volume: </label>
+                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="100" step="1">
+                        <span id="volumeValue">100%</span>
+                    </div>
+                    <div class="volume-buttons">
+                        <button class="volume-btn" onclick="changeVolume(-0.1)">-10%</button>
+                        <button class="volume-btn" onclick="changeVolume(-0.05)">-5%</button>
+                        <button class="volume-btn" onclick="changeVolume(0.05)">+5%</button>
+                        <button class="volume-btn" onclick="changeVolume(0.1)">+10%</button>
+                        <button class="volume-btn" onclick="setVolume(0)">Mute</button>
+                        <button class="volume-btn" onclick="setVolume(1)">Max</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status" id="status">Ready - Click buttons to test endpoints</div>
+    </div>
+
+    <script>
+        const debugLog = document.getElementById('debugLog');
+        const status = document.getElementById('status');
+        const testVideo = document.getElementById('testVideo');
+        const currentVolume = document.getElementById('currentVolume');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+
+        // Function to add log entry
+        function addLogEntry(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            debugLog.value += logEntry;
+            debugLog.scrollTop = debugLog.scrollHeight;
+        }
+
+        // Function to clear log
+        function clearLog() {
+            debugLog.value = '';
+            addLogEntry('Log cleared');
+        }
+
+        // Function to update volume display
+        function updateVolumeDisplay() {
+            const volume = testVideo.volume;
+            currentVolume.textContent = volume.toFixed(2);
+            volumeSlider.value = Math.round(volume * 100);
+            volumeValue.textContent = `${Math.round(volume * 100)}%`;
+        }
+
+        // Function to change volume by delta
+        function changeVolume(delta) {
+            const newVolume = Math.max(0, Math.min(1, testVideo.volume + delta));
+            setVolume(newVolume);
+        }
+
+        // Function to set volume to specific value
+        function setVolume(volume) {
+            const oldVolume = testVideo.volume;
+            testVideo.volume = volume;
+            addLogEntry(`Custom volume control - Changed from ${oldVolume.toFixed(2)} to ${volume.toFixed(2)}`, 'video');
+
+            // Trigger click endpoint for significant changes
+            if (Math.abs(volume - oldVolume) > 0.01) {
+                addLogEntry('Custom volume change detected - triggering /click endpoint', 'event');
+                testEndpoint('/click');
+            }
+        }
+
+        // Function to test endpoints
+        async function testEndpoint(endpoint) {
+            const startTime = Date.now();
+            addLogEntry(`Sending request to: ${endpoint}`);
+            status.textContent = `Testing ${endpoint}...`;
+
+            try {
+                const response = await fetch(endpoint);
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                if (response.ok) {
+                    const result = await response.text();
+                    addLogEntry(`SUCCESS (${duration}ms): ${endpoint} - ${result}`, 'success');
+                    status.textContent = `Success: ${endpoint} (${duration}ms)`;
+                } else {
+                    addLogEntry(`ERROR (${duration}ms): ${endpoint} - Status: ${response.status}`, 'error');
+                    status.textContent = `Error: ${endpoint} (${response.status})`;
+                }
+            } catch (error) {
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                addLogEntry(`FAILED (${duration}ms): ${endpoint} - ${error.message}`, 'error');
+                status.textContent = `Failed: ${endpoint} - ${error.message}`;
+            }
+        }
+
+        // Initialize volume detection
+        detectVolumeChange();
+
+        // Volume slider event listener
+        volumeSlider.addEventListener('input', (e) => {
+            const newVolume = e.target.value / 100;
+            setVolume(newVolume);
+        });
+
+        // Log page load
+        addLogEntry('Debug page loaded');
+        addLogEntry('Available endpoints: /focus-powerpoint, /start-slideshow, /exit-slideshow, /click-left, /click-right, /click');
+
+        // Log volume change events (if they occur)
+        addEventListener("volumechange", (event) => {
+            addLogEntry('Volume change event detected', 'event');
+            testEndpoint('/click');
+        });
+
+        // Enhanced volume change detection for mobile devices
+        let lastVolume = 1.0;
+
+        // Function to detect volume changes from hardware buttons
+        function detectVolumeChange() {
+            // Try to get system volume (this may not work on all browsers due to security restrictions)
+            if (navigator.mediaSession && navigator.mediaSession.setActionHandler) {
+                navigator.mediaSession.setActionHandler('previoustrack', () => {
+                    addLogEntry('Hardware volume down button pressed', 'event');
+                    testEndpoint('/click');
+                });
+
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                    addLogEntry('Hardware volume up button pressed', 'event');
+                    testEndpoint('/click');
+                });
+            }
+        }
+
+        // Monitor video volume changes more precisely
+        testVideo.addEventListener('volumechange', (e) => {
+            const newVolume = testVideo.volume;
+            const muted = testVideo.muted;
+            const volumeDelta = Math.abs(newVolume - lastVolume);
+
+            addLogEntry(`Volume changed - Volume: ${newVolume.toFixed(2)}, Muted: ${muted}, Delta: ${volumeDelta.toFixed(3)}`, 'video');
+            updateVolumeDisplay();
+
+            // Only trigger if there's a significant volume change (to avoid false triggers)
+            if (volumeDelta > 0.01) {
+                addLogEntry('Significant volume change detected - triggering /click endpoint', 'event');
+                testEndpoint('/click');
+            }
+
+            lastVolume = newVolume;
+        });
+
+        // Add touch event listeners for volume control simulation
+        let touchStartY = 0;
+        let touchStartVolume = 1.0;
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartY = e.touches[0].clientY;
+                touchStartVolume = testVideo.volume;
+                addLogEntry(`Touch start for volume control - Y: ${touchStartY}, Current volume: ${touchStartVolume.toFixed(2)}`, 'event');
+            }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+                const currentY = e.touches[0].clientY;
+                const deltaY = touchStartY - currentY;
+                const volumeChange = (deltaY / window.innerHeight) * 0.5; // Scale factor
+                const newVolume = Math.max(0, Math.min(1, touchStartVolume + volumeChange));
+
+                if (Math.abs(newVolume - testVideo.volume) > 0.01) {
+                    testVideo.volume = newVolume;
+                    addLogEntry(`Touch volume control - Delta Y: ${deltaY.toFixed(1)}, New volume: ${newVolume.toFixed(2)}`, 'event');
+                }
+            }
+        });
+
+        // Initialize volume display
+        testVideo.addEventListener('loadedmetadata', updateVolumeDisplay);
+
+        // Log window focus/blur events
+        window.addEventListener('focus', () => {
+            addLogEntry('Window focused', 'event');
+        });
+
+        window.addEventListener('blur', () => {
+            addLogEntry('Window blurred', 'event');
+        });
+
+        // Log visibility change events
+        document.addEventListener('visibilitychange', () => {
+            addLogEntry(`Page visibility changed: ${document.visibilityState}`, 'event');
+        });
+
+        // Log online/offline events
+        window.addEventListener('online', () => {
+            addLogEntry('Device came online', 'event');
+        });
+
+        window.addEventListener('offline', () => {
+            addLogEntry('Device went offline', 'event');
+        });
+
+        // Log scroll events
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                addLogEntry(`Scroll event - X: ${window.scrollX}, Y: ${window.scrollY}`, 'event');
+            }, 100);
+        });
+
+        // Log touch events
+        document.addEventListener('touchstart', (e) => {
+            addLogEntry(`Touch start - ${e.touches.length} finger(s)`, 'event');
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            addLogEntry(`Touch move - ${e.touches.length} finger(s)`, 'event');
+        });
+
+        document.addEventListener('touchend', (e) => {
+            addLogEntry(`Touch end - ${e.changedTouches.length} finger(s)`, 'event');
+        });
+
+        // Log mouse events
+        document.addEventListener('mousedown', (e) => {
+            addLogEntry(`Mouse down - X: ${e.clientX}, Y: ${e.clientY}`, 'event');
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            addLogEntry(`Mouse up - X: ${e.clientX}, Y: ${e.clientY}`, 'event');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            // Throttle mousemove events to avoid spam
+            clearTimeout(window.mouseMoveTimeout);
+            window.mouseMoveTimeout = setTimeout(() => {
+                addLogEntry(`Mouse move - X: ${e.clientX}, Y: ${e.clientY}`, 'event');
+            }, 500);
+        });
+
+        // Log keyboard events
+        document.addEventListener('keydown', (e) => {
+            addLogEntry(`Key down - Key: ${e.key}, Code: ${e.code}`, 'event');
+        });
+
+        document.addEventListener('keyup', (e) => {
+            addLogEntry(`Key up - Key: ${e.key}, Code: ${e.code}`, 'event');
+        });
+
+        // Log resize events
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                addLogEntry(`Window resize - Width: ${window.innerWidth}, Height: ${window.innerHeight}`, 'event');
+            }, 100);
+        });
+
+        // Log orientation change events
+        window.addEventListener('orientationchange', () => {
+            addLogEntry(`Orientation change - ${window.orientation}°`, 'event');
+        });
+
+        // Log device motion events (if supported)
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', (e) => {
+                addLogEntry(`Device motion - X: ${e.accelerationIncludingGravity?.x}, Y: ${e.accelerationIncludingGravity?.y}, Z: ${e.accelerationIncludingGravity?.z}`, 'event');
+            });
+        }
+
+        // Log device orientation events (if supported)
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                addLogEntry(`Device orientation - Alpha: ${e.alpha}, Beta: ${e.beta}, Gamma: ${e.gamma}`, 'event');
+            });
+        }
+
+        // Video event listeners
+        testVideo.addEventListener('loadstart', () => {
+            addLogEntry('Video load started', 'video');
+        });
+
+        testVideo.addEventListener('loadedmetadata', () => {
+            addLogEntry(`Video metadata loaded - Duration: ${testVideo.duration}s`, 'video');
+            updateVolumeDisplay();
+        });
+
+        testVideo.addEventListener('loadeddata', () => {
+            addLogEntry('Video data loaded', 'video');
+        });
+
+        testVideo.addEventListener('canplay', () => {
+            addLogEntry('Video can start playing', 'video');
+        });
+
+        testVideo.addEventListener('play', () => {
+            addLogEntry('Video started playing', 'video');
+        });
+
+        testVideo.addEventListener('pause', () => {
+            addLogEntry('Video paused', 'video');
+        });
+
+        testVideo.addEventListener('ended', () => {
+            addLogEntry('Video ended', 'video');
+        });
+
+        testVideo.addEventListener('ratechange', () => {
+            addLogEntry(`Playback rate changed - Rate: ${testVideo.playbackRate}`, 'video');
+        });
+
+        testVideo.addEventListener('seeked', () => {
+            addLogEntry(`Video seeked to: ${testVideo.currentTime}s`, 'video');
+        });
+
+        testVideo.addEventListener('timeupdate', () => {
+            // Throttle timeupdate events to avoid spam
+            clearTimeout(window.timeUpdateTimeout);
+            window.timeUpdateTimeout = setTimeout(() => {
+                addLogEntry(`Video time update - Current: ${testVideo.currentTime.toFixed(1)}s / ${testVideo.duration.toFixed(1)}s`, 'video');
+            }, 1000);
+        });
+
+        testVideo.addEventListener('error', (e) => {
+            addLogEntry(`Video error - Code: ${testVideo.error?.code}, Message: ${testVideo.error?.message}`, 'error');
+        });
+    </script>
+</body>
+</html>
